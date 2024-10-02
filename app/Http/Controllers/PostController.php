@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Models\Post;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all(); // Отримання всіх постів
-        return view('welcome', compact('posts')); // Повернення до welcome з постами
+        $posts = Post::all();
+        return view('welcome', compact('posts'));
     }
 
-public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-    ]);
+    public function store(Request $request)
+    {
+        Post::create([
+            'title' => $request->title,
+            'content' => $request->content,
+        ]);
 
-    Post::create([
-        'title' => $request->title,
-        'content' => $request->content,
-        // 'user_id' => null, // Цей рядок більше не потрібен
-    ]);
+        return redirect()->route('home');  
+    }
 
-    return redirect()->route('posts.index');
-}
-
+    public function destroy($id)
+    {
+        Post::destroy($id);
+        return redirect()->route('home');  
+    }
 }
